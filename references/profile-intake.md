@@ -9,6 +9,9 @@ Goals:
 
 ## 0) Setup (Once Per Session)
 
+Commands below assume you are running from the skill folder. If not, use the installed path:
+`python ~/.codex/skills/crushable-wingman/scripts/wingman_store.py ...`
+
 1. Ensure local store exists:
 ```bash
 python scripts/wingman_store.py init

@@ -60,6 +60,9 @@ description: Dating wingman and texting coach. Use when the user asks for reply 
 
 用 `scripts/wingman_store.py` 统一创建/读取/写入/校验（推荐，避免命名与约束漂移）。
 
+常见安装路径（不在 skill 目录时用这个）：
+- `~/.codex/skills/crushable-wingman/scripts/wingman_store.py`
+
 常用命令（从 skill 目录运行，或用已安装路径运行）：
 
 ```bash
