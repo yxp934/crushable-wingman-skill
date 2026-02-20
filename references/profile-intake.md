@@ -7,6 +7,10 @@ Goals:
 - Reuse stored answers to avoid asking the same questions again.
 - Ask in small batches (2-4 questions per round).
 
+Non-negotiable:
+- Initialization is multi-turn. Keep going across turns until both profiles are complete.
+- Do not stop early just because you can "already give advice". If the user needs urgent help, give a minimal safe answer, then return to intake.
+
 ## 0) Setup (Once Per Session)
 
 Commands below assume you are running from the skill folder. If not, use the installed path:
@@ -48,6 +52,16 @@ python scripts/wingman_store.py user missing
 python scripts/wingman_store.py crush missing --handle <handle>
 ```
 
+Completion check:
+- Keep asking until BOTH of these commands print nothing:
+```bash
+python scripts/wingman_store.py user missing
+python scripts/wingman_store.py crush missing --handle <handle>
+```
+
+Language:
+- Ask the questions in the user's language.
+
 ## 2) User Profile Intake (Full Coverage)
 
 Source: Crushable `profile-questionnaire` fields.
@@ -66,36 +80,36 @@ python scripts/wingman_store.py user init --force
 ### Ask In Batches (Suggested)
 
 Batch 1 (Basics)
-- `user_name`: "我该怎么称呼你？"
-- `user_pronouns`: "你的代词/称呼偏好？(she/her, he/him, they/them, 其他, 不想说)"
-- `sexual_orientation`: "你通常对哪类人感兴趣？(men/women/everyone/其他/不想说)"
+- `user_name`: "What should I call you?"
+- `user_pronouns`: "What are your pronouns? (she/her, he/him, they/them, other, prefer not to say)"
+- `sexual_orientation`: "Who are you interested in? (men/women/everyone/other/prefer not to say)"
 
 Batch 2 (Basics + Personality)
-- `age_range`: "你的年龄段？(16-18 / 19-24 / 25-30 / 31-35 / 36+ / 不想说)"
-- `relationship_status`: "你的当前关系状态？(single / complicated / just vibing / talking to someone / 其他)"
-- `social_energy`: "你更像：内向/外向/中间？"
+- `age_range`: "What is your age range? (16-18 / 19-24 / 25-30 / 31-35 / 36+ / prefer not to say)"
+- `relationship_status`: "Current relationship status? (single / it's complicated / just vibing / talking to someone / other)"
+- `social_energy`: "Where do you get your energy? (introvert / extrovert / ambivert)"
 
 Batch 3 (Personality + Interests)
-- `planning_style`: "你对计划更像：规划型/随性/看心情？"
-- `confidence_level`: "你在 crush 面前的自信程度 1-10？(不知道可答 unknown)"
-- `date_preferences`: "理想约会更像哪种？(咖啡深聊/户外冒险/电影宅/晚餐氛围/其他)"
+- `planning_style`: "How do you approach plans? (planner / spontaneous / flexible)"
+- `confidence_level`: "How confident do you feel around crushes? (1-10, or `unknown`)"
+- `date_preferences`: "What sounds like your ideal date? (coffee & deep talks / adventure & outdoors / movies & chill / dinner & atmosphere / other)"
 
 Batch 4 (Interests + Dating Style)
-- `hobbies`: "你最常做/最喜欢的兴趣（多选）？"
-  - Store as JSON array, e.g. `hobbies: [\"音乐\", \"旅行\"]`
-  - If they refuse: use `hobbies: [\"prefer_not_to_say\"]`
-- `approach_style`: "你更像：害羞/直接/调皮flirty/体贴？"
-- `pace`: "你的节奏偏好：慢热(slow burn)/稳步(steady)/直接冲(go for it)/其他？"
+- `hobbies`: "Pick your top interests (choose multiple)."
+  - Store as a JSON array, e.g. `hobbies: [\"music\", \"travel\"]`
+  - If they refuse: `hobbies: [\"prefer_not_to_say\"]`
+- `approach_style`: "How would you describe your approach? (shy & subtle / bold & direct / playful & flirty / thoughtful & caring / other)"
+- `pace`: "What is your preferred pace? (slow burn / steady / go for it / other)"
 
 Batch 5 (Communication)
-- `comm_method`: "你更喜欢怎么建立联系：text/in-person/calls/mixed？"
-- `response_time`: "你通常回消息速度：秒回/1小时内/几小时/看到才回/会刻意等？"
-- `emoji_user`: "你常用 emoji 吗？(true/false/unknown)"
+- `comm_method`: "How do you prefer to connect? (texting / in-person / calls / mixed)"
+- `response_time`: "Your typical text response time? (instant / within an hour / a few hours / whenever I see it / strategic wait / other)"
+- `emoji_user`: "Are you an emoji person? (`true` / `false` / `unknown`)"
 
 Batch 6 (Boundaries)
-- `comfort_sharing`: "你表达/分享感受的舒适度 1-10？(不知道可答 unknown)"
-- `pda_comfort`: "公开亲密(PDA)你更舒服：喜欢/只小动作/更私密/看场合？"
-- `relationship_goal`: "你现在更想要：认真关系/顺其自然/轻松随缘/还在想？"
+- `comfort_sharing`: "How comfortable are you sharing feelings? (1-10, or `unknown`)"
+- `pda_comfort`: "Public displays of affection? (love it / small gestures only / private person / depends)"
+- `relationship_goal`: "What are you looking for? (serious relationship / see where it goes / casual and fun / still figuring it out)"
 
 ## 3) Crush Profile Intake (Full Coverage + Confidence)
 
@@ -110,33 +124,42 @@ python scripts/wingman_store.py crush show-profile --handle <handle>
 ### Ask In Batches (Suggested)
 
 Batch 1 (Basic)
-- `name`: "我该怎么称呼 TA？"
-- `nickname`: "你给 TA 的昵称？(可空)"
-- `how_you_know_them`: "你们怎么认识的？(同事/同学/朋友介绍/线上/其他)"
+- `name`: "What should we call them?"
+- `nickname`: "Do you have a nickname for them? (optional)"
+- `how_you_know_them`: "How do you know them? (coworkers / classmates / mutual friends / online / other)"
 
 Batch 2 (Interests + confidence)
-- `interests`: "TA 明显喜欢什么？(多选/举例)"
-- `interests_confidence`: "你对这些兴趣的确定度：sure/guess/unknown？"
+- `interests`: "What do they clearly enjoy? (pick a few; examples welcome)"
+- `interests_confidence`: "How confident are you? (sure / guess / unknown)"
 
 Batch 3 (Communication + confidence)
-- `communication_style`: "TA 的沟通方式更像什么？(多选)"
-- `communication_confidence`: "确定度：sure/guess/unknown？"
+- `communication_style`: "How do they like to connect/communicate? (pick a few)"
+- `communication_confidence`: "Confidence: sure / guess / unknown"
 
 Batch 4 (Availability + confidence)
-- `availability_pattern`: "TA 一般什么时候更有空/更愿意见面或聊天？"
-- `availability_confidence`: "确定度：sure/guess/unknown？"
+- `availability_pattern`: "When are they usually most available to meet or chat?"
+- `availability_confidence`: "Confidence: sure / guess / unknown"
 
 Batch 5 (Context)
-- `relationship_context`: "你们关系背景：刚认识/朋友一阵/同学/同事/线上/共同朋友/其他？"
-- `current_status`: "现在进展状态：刚crush/聊过/会见面/暧昧张力/信号不清/其他？"
+- `relationship_context`: "Relationship context: just met / friends for a while / classmates / coworkers / online connection / mutual friends / other"
+- `current_status`: "Where are things right now? (just crushing / we've talked / we hang out / there's tension / unclear signals / other)"
 
 Batch 6 (Sensitive)
-- `sensitive_topics`: "有哪些话题/点最好先别碰？(多选)"
-  - Store as JSON array, e.g. `sensitive_topics: [\"前任\", \"政治\"]`
+- `sensitive_topics`: "Any sensitive topics to avoid for now? (pick a few, or say none)"
+  - Store as a JSON array, e.g. `sensitive_topics: [\"ex relationships\", \"politics\"]`
+  - If none: `sensitive_topics: [\"none\"]`
 
 Batch 7 (History)
-- `last_meaningful_moment`: "最近一次有意义的互动是什么？"
-- `last_contact_date`: "最后一次联系/见面的日期？(YYYY-MM-DD 或 unknown)"
+- `last_meaningful_moment`: "What was the last meaningful moment between you two?"
+- `last_contact_date`: "When did you last talk or meet? (YYYY-MM-DD or `unknown`)"
+
+Batch 8 (Optional, fast)
+- `dislikes`: "Any clear dislikes/turn-offs? (places/topics/activities)"
+  - Store as a JSON array, e.g. `dislikes: [\"loud bars\", \"small talk\"]`
+  - If none: `dislikes: [\"none\"]` (or `dislikes: [\"unknown\"]`)
+- `best_contact_time`: "Do you know the best time to contact them? (or `unknown`)"
+- `crush_gender`: "Their gender (if known), otherwise `unknown`."
+- `pronouns`: "Their pronouns (if known), otherwise `unknown`."
 
 ## 4) Writeback And Validate
 
