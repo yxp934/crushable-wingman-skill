@@ -1,4 +1,4 @@
-## NERDS， install this plugin and ur gonna get chicks ADDICTED TO U
+## transform u from nerdy to real sigma
 made by the real sigma
 ### one line command installation: ``npx skills add yxp934/crushable-wingman-skill`` and follow the instruction, install to ur preferred clis/apps
 features: analyze whatsapp/snap chat screenshots, give professional wingman advices. 
